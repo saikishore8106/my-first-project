@@ -8,7 +8,7 @@ pipeline {
         stage('Install') {
             steps {
                 dir('app') {
-                    sh 'pip install -r requirements.txt'
+                    sh 'pip install --user -r requirements.txt'
                 }
             }
         }
