@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/saikishore8106/my-first-project.git'  // or use local repo
+                git branch: 'main', url: 'https://github.com/saikishore8106/my-first-project.git'
             }
         }
         stage('Install') {
