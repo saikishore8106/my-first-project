@@ -2,25 +2,22 @@ pipeline {
     agent {
         docker {
             image 'python:3.10-slim'
-            // Add these arguments to fix permission issues
             args '-u root -v /tmp/pip_cache:/tmp/pip_cache'
         }
     }
     
     environment {
-        // Set PIP cache directory
         PIP_CACHE_DIR = '/tmp/pip_cache'
+        PATH = "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/bin"
     }
     
     stages {
         stage('Install') {
             steps {
                 dir('app') {
-                    // Install with --user flag or in virtualenv
                     sh '''
                         python -m pip install --upgrade pip
                         pip install --user -r requirements.txt
-                        export PATH=$PATH:/root/.local/bin
                     '''
                 }
             }
@@ -29,12 +26,15 @@ pipeline {
         stage('Test') {
             steps {
                 dir('app') {
-                    sh 'pytest test_main.py -v'
+                    sh '''
+                        export PATH=$PATH:/root/.local/bin
+                        pytest test_main.py -v --junitxml=test-results.xml
+                    '''
                 }
             }
             post {
                 always {
-                    junit 'app/test-results.xml'  // Save test results
+                    junit 'app/test-results.xml'
                 }
             }
         }
@@ -42,15 +42,10 @@ pipeline {
         stage('Run App') {
             steps {
                 dir('app') {
-                    sh 'python main.py'
-                }
-            }
-            post {
-                success {
-                    echo 'Application started successfully'
-                }
-                failure {
-                    echo 'Failed to start application'
+                    sh '''
+                        export PATH=$PATH:/root/.local/bin
+                        python main.py
+                    '''
                 }
             }
         }
@@ -58,7 +53,7 @@ pipeline {
     
     post {
         always {
-            cleanWs()  // Clean workspace after build
+            cleanWs()
         }
     }
 }
