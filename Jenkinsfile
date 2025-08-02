@@ -8,21 +8,21 @@ pipeline {
         stage('Install') {
             steps {
                 dir('app') {
-                    sh 'sudo pip install -r requirements.txt'
+                    sh 'pip install -r requirements.txt'
                 }
             }
         }
         stage('Test') {
             steps {
                 dir('app') {
-                    sh 'sudo pytest test_main.py'
+                    sh 'pytest test_main.py'
                 }
             }
         }
         stage('Run App') {
             steps {
                 dir('app') {
-                    sh 'sudo python main.py'
+                    sh 'python main.py'
                 }
             }
         }
