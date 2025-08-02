@@ -5,31 +5,24 @@ pipeline {
         }
     }
     stages {
-        stage('Prepare Virtual Environment') {
+        stage('Install') {
             steps {
                 dir('app') {
-                    sh 'python3 -m venv .venv' // Create a virtual environment named ".venv"
-                }
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                dir('app') {
-                    sh 'source .venv/bin/activate && pip install -r requirements.txt' // Activate and install requirements
+                    sh 'sudo pip install -r requirements.txt'
                 }
             }
         }
         stage('Test') {
             steps {
                 dir('app') {
-                    sh 'source .venv/bin/activate && pytest test_main.py' // Activate and run tests
+                    sh 'sudo pytest test_main.py'
                 }
             }
         }
         stage('Run App') {
             steps {
                 dir('app') {
-                    sh 'source .venv/bin/activate && python main.py' // Activate and run the app
+                    sh 'sudo python main.py'
                 }
             }
         }
