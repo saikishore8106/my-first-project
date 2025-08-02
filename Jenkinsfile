@@ -5,11 +5,6 @@ pipeline {
         }
     }
     stages {
-        stage('Clone') {
-            steps {
-                git branch: 'main', url: 'https://github.com/saikishore8106/my-first-project.git'
-            }
-        }
         stage('Install') {
             steps {
                 dir('app') {
